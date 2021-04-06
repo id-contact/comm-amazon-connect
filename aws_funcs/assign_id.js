@@ -7,8 +7,9 @@ exports.handler = (data, _context, callback) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
     }, (res) => {
+        res.on('data', () => {}); // eat data (we dont need it but)
         res.on('end', () => {
-            if (res.statusCode !== 200) {
+            if (res.statusCode < 200 || res.statusCode > 300) {
                 callback(Error(`Backed ${res.statusCode}`));
             } else {
                 callback(null, {});
