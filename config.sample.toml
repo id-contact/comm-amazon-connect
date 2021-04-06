@@ -1,6 +1,6 @@
 [global]
 
-internal_url = ""
+internal_url = "http://comm-amazon-connect:8000"
 phonenumber = ""
 dtmf_length = 10
 result_length = 32
