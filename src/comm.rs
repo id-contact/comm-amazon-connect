@@ -23,7 +23,7 @@ pub async fn report_result(db: &SessionDBConn, config: &Config, resultcode: &str
 
     let resultcode_copy = resultcode.to_string();
     let jwt_copy = jwt.to_string();
-    let n = db.run(move |c| c.execute("UPDATE session SET attr_jwt = $1 WHERE attr_jwt IS NULL AND resultcode = $2", &[&resultcode_copy, &jwt_copy])).await?;
+    let n = db.run(move |c| c.execute("UPDATE session SET attr_jwt = $1 WHERE attr_jwt IS NULL AND resultcode = $2", &[&jwt_copy, &resultcode_copy])).await?;
     if n == 1 {
         Ok(())
     } else {
