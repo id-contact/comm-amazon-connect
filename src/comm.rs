@@ -46,7 +46,7 @@ pub async fn link_phone_session(db: &SessionDBConn, dtmfcode: &str, sessionid: &
 pub async fn get_session_info(db: &SessionDBConn, config: &Config, sessionid: &str) -> Result<(String, Option<AuthResult>), Error> {
     let sessionid_copy = sessionid.to_string();
     let (purpose, jwt) = db.run(move |c| -> Result<(String, Option<String>), Error> {
-        let rows = c.query("SELECT purpose, attr_jwt WHERE sessionid = $1", &[&sessionid_copy])?;
+        let rows = c.query("SELECT purpose, attr_jwt FROM session WHERE sessionid = $1", &[&sessionid_copy])?;
         if rows.len() != 1 {
             Err(Error::NotFound)
         } else {

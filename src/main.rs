@@ -1,5 +1,5 @@
 use id_contact_proto::{AuthResult, StartCommRequest, StartCommResponse};
-use rocket::{State, fairing::AdHoc, launch, post, routes};
+use rocket::{State, fairing::AdHoc, get, launch, post, routes};
 use rocket_contrib::{database, databases::postgres, json::Json};
 use serde::{Serialize, Deserialize};
 
@@ -66,7 +66,7 @@ struct SessionInfo {
     auth_result: Option<AuthResult>,
 }
 
-#[post("/session_info/<sessionid>")]
+#[get("/session_info/<sessionid>")]
 async fn session_info(
     sessionid: String,
     config: State<'_, Config>,
