@@ -1,11 +1,11 @@
 // Set CALL_URL to something like http://proxy.irma.bellen.tweede.golf/link_phone
 
-const http = require('https');
+const http = require('http'); //modify this to https for production
 
 exports.handler = (data, _context, callback) => {
     const req = http.request(process.env.CALL_URL, {
         method: 'POST',
-        headers: { 'Content-TYpe': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
     }, (res) => {
         res.on('end', () => {
             if (res.statusCode !== 200) {
