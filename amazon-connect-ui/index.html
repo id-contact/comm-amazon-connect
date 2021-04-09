@@ -12,6 +12,9 @@
                 // initialize the ccp
                 connect.core.initCCP(containerDiv, {
                     ccpUrl: AmazonConnectURL,
+                    softphone: {
+                        allowFramedSoftphone: true,
+                    },
                 });
 
                 connect.contact(async (contact) => {
@@ -19,7 +22,7 @@
                         document.getElementById("attrInfo").src = "about:blank";
                     });
 
-                    document.getElementById("attrInfo").src = AttributeURL + contact.getContactId();
+                    document.getElementById("attrInfo").src = `${AttributeURL}${contact.getContactId()}`;
                 });
             }
         </script>
