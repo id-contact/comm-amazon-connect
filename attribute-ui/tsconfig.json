@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "target": "es2017",
+    "outDir": "./build",
+    "sourceMap": true,
+    "incremental": true,
+    "types": ["node"],
+  },
+  "exclude": ["node_modules", "frontend", "public"]
+}
+  
