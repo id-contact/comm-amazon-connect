@@ -16,7 +16,7 @@ The plugin backend is written in [Rust](https://www.rust-lang.org/), the web int
 
 ## Getting started
 
-To build and run this plugin backend, do:
+To build and run this plugin backend run:
 ```
 ROCKET_CONFIG=config.sample.toml cargo run
 ```
@@ -27,6 +27,15 @@ cd attribute-ui
 yarn
 yarn run build
 ```
+
+Setup a Postgres database and execute `schema.sql`.
+
+Configure the applicable domains and credentials in:
+
+- `amazon-connect-ui/config.sample.js`
+- `attribute-ui/config.js`
+- `config.sample.toml`
+
 
 You will need a webserver (like NGINX) to serve static files and perform the necessary routing. 
 
