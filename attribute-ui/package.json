@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "description": "Attribute ui for ID contact amazon connect plugin",
   "scripts": {
-    "watch": "parcel index.html config.js --no-autoinstall --port 3000 --hmr-port 3001 --dist-dir public",
+    "watch": "parcel index.html config.js --port 3000 --hmr-port 3001 --dist-dir public",
     "build": "parcel build index.html config.js --dist-dir public"
   },
   "author": "David Venhoek <david@tweedegolf.com>",
   "license": "UNLICENCED",
-  "dependencies": {
-  },
   "devDependencies": {
+    "@parcel/transformer-sass": "2.0.0-beta.2",
     "@types/react": "^17.0.0",
     "axios": "0.21.1",
+    "marx-css": "^3.0.8",
     "parcel": "^2.0.0-beta.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
