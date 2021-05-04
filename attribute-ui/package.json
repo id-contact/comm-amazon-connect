@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Attribute ui for ID contact amazon connect plugin",
   "scripts": {
-    "watch": "parcel index.html config.js --port 3000 --hmr-port 3001 --dist-dir public",
-    "build": "parcel build index.html config.js --dist-dir public"
+    "watch": "parcel config.js index.html --port 3000 --hmr-port 3001 --dist-dir public",
+    "build": "parcel build config.js index.html --dist-dir public"
   },
   "author": "David Venhoek <david@tweedegolf.com>",
   "license": "UNLICENCED",
