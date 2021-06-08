@@ -12,6 +12,13 @@ mod error;
 #[database("session")]
 pub struct SessionDBConn(postgres::Client);
 
+#[get("/clean_db")]
+async fn clean_db(
+    db: SessionDBConn,
+) -> Result<(), Error> {
+    comm::clean_db(&db).await
+}
+
 #[post("/start_communication", data = "<request>")]
 async fn start(
     request: Json<StartCommRequest>,
@@ -87,6 +94,7 @@ fn rocket() -> rocket::Rocket {
             report_result,
             link_phone,
             session_info,
+            clean_db,
         ])
         .attach(SessionDBConn::fairing())
         .attach(AdHoc::config::<Config>())

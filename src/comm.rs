@@ -3,6 +3,11 @@ use id_contact_proto::AuthResult;
 use crate::{SessionDBConn, config::Config};
 use crate::error::Error;
 
+pub async fn clean_db(db: &SessionDBConn) -> Result<(), Error> {
+    db.run(move |c| c.execute("DELETE FROM session WHERE lastActivity < now() - INTERVAL '1 hour'", &[])).await?;
+    Ok(())
+}
+
 pub async fn create_session(db: &SessionDBConn, config: &Config, purpose: &str) -> Result<(String, String), Error> {
     loop {
         let dtmf = config.generate_dtmf();
@@ -11,7 +16,7 @@ pub async fn create_session(db: &SessionDBConn, config: &Config, purpose: &str) 
         let dtmf_copy = dtmf.clone();
         let result_copy = result.clone();
         let purpose_copy = purpose.to_string();
-        let n = db.run(move |c| c.execute("INSERT INTO session (dtmfcode, resultcode, purpose) VALUES ($1, $2, $3)", &[&dtmf_copy, &result_copy, &purpose_copy])).await?;
+        let n = db.run(move |c| c.execute("INSERT INTO session (dtmfcode, resultcode, purpose, lastActivity) VALUES ($1, $2, $3, now())", &[&dtmf_copy, &result_copy, &purpose_copy])).await?;
         if n == 1 {
             return Ok((dtmf, result))
         }
@@ -23,7 +28,7 @@ pub async fn report_result(db: &SessionDBConn, config: &Config, resultcode: &str
 
     let resultcode_copy = resultcode.to_string();
     let jwt_copy = jwt.to_string();
-    let n = db.run(move |c| c.execute("UPDATE session SET attr_jwt = $1 WHERE attr_jwt IS NULL AND resultcode = $2", &[&jwt_copy, &resultcode_copy])).await?;
+    let n = db.run(move |c| c.execute("UPDATE session SET attr_jwt = $1, lastActivity = now() WHERE attr_jwt IS NULL AND resultcode = $2", &[&jwt_copy, &resultcode_copy])).await?;
     if n == 1 {
         Ok(())
     } else {
@@ -35,7 +40,7 @@ pub async fn link_phone_session(db: &SessionDBConn, dtmfcode: &str, sessionid: &
     let dtmf_copy = dtmfcode.to_string();
     let session_copy = sessionid.to_string();
 
-    let n = db.run(move |c| c.execute("UPDATE session SET sessionid = $1 WHERE sessionid IS NULL AND dtmfcode = $2", &[&session_copy, &dtmf_copy])).await?;
+    let n = db.run(move |c| c.execute("UPDATE session SET sessionid = $1, lastActivity = now() WHERE sessionid IS NULL AND dtmfcode = $2", &[&session_copy, &dtmf_copy])).await?;
     if n == 1 {
         Ok(())
     } else {
