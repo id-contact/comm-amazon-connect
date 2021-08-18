@@ -1,5 +1,5 @@
-use crate::error::Error;
-
+use id_contact_comm_common::config::{RawConfig as RawBaseConfig, Config as BaseConfig};
+use id_contact_comm_common::error::Error;
 use id_contact_jwt::{EncryptionKeyConfig, SignKeyConfig};
 use serde::Deserialize;
 use josekit::{jwe::JweDecrypter, jws::JwsVerifier};
@@ -10,7 +10,8 @@ use std::convert::TryFrom;
 
 #[derive(Deserialize, Debug)]
 struct RawConfig {
-    internal_url: String,
+    #[serde(flatten)]
+    raw_base_config: RawBaseConfig,
     phonenumber: String,
 
     dtmf_length: usize,
@@ -23,7 +24,7 @@ struct RawConfig {
 #[derive(Debug, Deserialize)]
 #[serde(try_from = "RawConfig")]
 pub struct Config {
-    internal_url: String,
+    base_config: BaseConfig,
     phonenumber: String,
 
     dtmf_length: usize,
@@ -38,7 +39,7 @@ impl TryFrom<RawConfig> for Config {
     type Error = Error;
     fn try_from(config: RawConfig) -> Result<Config, Error> {
         Ok(Config {
-            internal_url: config.internal_url,
+            base_config: BaseConfig::try_from(config.raw_base_config)?,
             phonenumber: config.phonenumber,
             
             dtmf_length: config.dtmf_length,
@@ -82,7 +83,7 @@ impl Config {
         &self.phonenumber
     }
 
-    pub fn internal_url(&self) -> &str {
-        &self.internal_url
+    pub fn base_config(&self) -> &BaseConfig {
+        &self.base_config
     }
 }

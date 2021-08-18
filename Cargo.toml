@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 id-contact-jwt = { git = "https://github.com/id-contact/id-contact-jwt.git" }
 id-contact-proto = { git = "https://github.com/id-contact/id-contact-proto.git" }
+id-contact-comm-common = { git = "https://github.com/id-contact/comm-common.git" }
 josekit = "0.7.1"
 postgres = "0.19.0"
 rand = "0.8.3"

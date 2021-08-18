@@ -1,13 +1,13 @@
+use id_contact_comm_common::error::Error;
 use id_contact_proto::{AuthResult, StartCommRequest, StartCommResponse};
 use rocket::{State, fairing::AdHoc, get, launch, post, routes};
 use rocket_contrib::{database, databases::postgres, json::Json};
 use serde::{Serialize, Deserialize};
 
-use crate::{config::Config, error::Error};
+use crate::{config::Config};
 
 mod comm;
 mod config;
-mod error;
 
 #[database("session")]
 pub struct SessionDBConn(postgres::Client);
@@ -36,7 +36,7 @@ async fn start(
     } else {
         Ok(Json(StartCommResponse{
             client_url: format!("tel:{},{}", config.phonenumber(), dtmf),
-            attr_url: Some(format!("{}/session_result/{}", config.internal_url(), resultcode)),
+            attr_url: Some(format!("{}/session_result/{}", config.base_config().internal_url(), resultcode)),
         }))
     }
 }

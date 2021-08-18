@@ -1,7 +1,7 @@
+use id_contact_comm_common::error::Error;
 use id_contact_proto::AuthResult;
 
 use crate::{SessionDBConn, config::Config};
-use crate::error::Error;
 
 pub async fn clean_db(db: &SessionDBConn) -> Result<(), Error> {
     db.run(move |c| c.execute("DELETE FROM session WHERE lastActivity < now() - INTERVAL '1 hour'", &[])).await?;
