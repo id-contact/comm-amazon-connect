@@ -615,7 +615,7 @@ dependencies = [
 [[package]]
 name = "id-contact-comm-common"
 version = "0.1.0"
-source = "git+https://github.com/id-contact/comm-common.git#17bda8dbb8da0776f0bb5eb73d3a64135118fff6"
+source = "git+https://github.com/id-contact/comm-common.git#471c846484b3e436afb2598beffd0fd41490c10e"
 dependencies = [
  "id-contact-jwt",
  "id-contact-proto",

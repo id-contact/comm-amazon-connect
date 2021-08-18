@@ -1,4 +1,4 @@
-use id_contact_comm_common::error::Error;
+use id_contact_comm_common::prelude::*;
 use id_contact_proto::{AuthResult, StartCommRequest, StartCommResponse};
 use rocket::{State, fairing::AdHoc, get, launch, post, routes};
 use rocket_contrib::{database, databases::postgres, json::Json};
