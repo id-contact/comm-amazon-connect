@@ -24,7 +24,7 @@ pub async fn create_session(db: &SessionDBConn, config: &Config, purpose: &str) 
 }
 
 pub async fn report_result(db: &SessionDBConn, config: &Config, resultcode: &str, jwt: &str) -> Result<(), Error> {
-    id_contact_jwt::decrypt_and_verify_auth_result(&jwt, config.validator(), config.decrypter())?;
+    id_contact_jwt::decrypt_and_verify_auth_result(&jwt, config.base_config().validator(), config.base_config().decrypter())?;
 
     let resultcode_copy = resultcode.to_string();
     let jwt_copy = jwt.to_string();
@@ -60,7 +60,7 @@ pub async fn get_session_info(db: &SessionDBConn, config: &Config, sessionid: &s
     }).await?;
 
     if let Some(jwt) = jwt {
-        Ok((purpose, Some(id_contact_jwt::decrypt_and_verify_auth_result(&jwt, config.validator(), config.decrypter())?)))
+        Ok((purpose, Some(id_contact_jwt::decrypt_and_verify_auth_result(&jwt, config.base_config().validator(), config.base_config().decrypter())?)))
     } else {
         Ok((purpose, None))
     }

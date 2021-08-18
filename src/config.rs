@@ -16,9 +16,6 @@ struct RawConfig {
 
     dtmf_length: usize,
     result_length: usize,
-
-    decryption_privkey: EncryptionKeyConfig,
-    signature_pubkey: SignKeyConfig,
 }
 
 #[derive(Debug, Deserialize)]
@@ -29,9 +26,6 @@ pub struct Config {
 
     dtmf_length: usize,
     result_length: usize,
-
-    decrypter: Box<dyn JweDecrypter>,
-    validator: Box<dyn JwsVerifier>,
 }
 
 // This tryfrom can be removed once try_from for fields lands in serde
@@ -44,9 +38,6 @@ impl TryFrom<RawConfig> for Config {
             
             dtmf_length: config.dtmf_length,
             result_length: config.result_length,
-
-            decrypter: Box::<dyn JweDecrypter>::try_from(config.decryption_privkey)?,
-            validator: Box::<dyn JwsVerifier>::try_from(config.signature_pubkey)?,
         })
     }
 }
@@ -69,14 +60,6 @@ impl Config {
             .take(self.result_length)
             .map(char::from)
             .collect()
-    }
-
-    pub fn decrypter(&self) -> &dyn JweDecrypter {
-        self.decrypter.as_ref()
-    }
-
-    pub fn validator(&self) -> &dyn JwsVerifier {
-        self.validator.as_ref()
     }
 
     pub fn phonenumber(&self) -> &str {
