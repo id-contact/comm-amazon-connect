@@ -1,10 +1,10 @@
 use crate::error::Error;
 
 use id_contact_jwt::{EncryptionKeyConfig, SignKeyConfig};
-use serde::Deserialize;
 use josekit::{jwe::JweDecrypter, jws::JwsVerifier};
-use rand::{thread_rng, Rng};
 use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
+use serde::Deserialize;
 
 use std::convert::TryFrom;
 
@@ -40,7 +40,7 @@ impl TryFrom<RawConfig> for Config {
         Ok(Config {
             internal_url: config.internal_url,
             phonenumber: config.phonenumber,
-            
+
             dtmf_length: config.dtmf_length,
             result_length: config.result_length,
 
