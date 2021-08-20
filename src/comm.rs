@@ -1,7 +1,7 @@
 use id_contact_comm_common::error::Error;
 use id_contact_proto::AuthResult;
 
-use crate::{SessionDBConn, config::Config};
+use crate::{config::Config, SessionDBConn};
 
 pub async fn clean_db(db: &SessionDBConn) -> Result<(), Error> {
     db.run(move |c| {
@@ -33,8 +33,17 @@ pub async fn create_session(
     }
 }
 
-pub async fn report_result(db: &SessionDBConn, config: &Config, resultcode: &str, jwt: &str) -> Result<(), Error> {
-    id_contact_jwt::decrypt_and_verify_auth_result(&jwt, config.base_config().validator(), config.base_config().decrypter())?;
+pub async fn report_result(
+    db: &SessionDBConn,
+    config: &Config,
+    resultcode: &str,
+    jwt: &str,
+) -> Result<(), Error> {
+    id_contact_jwt::decrypt_and_verify_auth_result(
+        &jwt,
+        config.base_config().validator(),
+        config.base_config().decrypter(),
+    )?;
 
     let resultcode_copy = resultcode.to_string();
     let jwt_copy = jwt.to_string();
@@ -83,7 +92,14 @@ pub async fn get_session_info(
         .await?;
 
     if let Some(jwt) = jwt {
-        Ok((purpose, Some(id_contact_jwt::decrypt_and_verify_auth_result(&jwt, config.base_config().validator(), config.base_config().decrypter())?)))
+        Ok((
+            purpose,
+            Some(id_contact_jwt::decrypt_and_verify_auth_result(
+                &jwt,
+                config.base_config().validator(),
+                config.base_config().decrypter(),
+            )?),
+        ))
     } else {
         Ok((purpose, None))
     }

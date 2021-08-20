@@ -4,7 +4,7 @@ use rocket::{fairing::AdHoc, get, launch, post, routes, serde::json::Json, State
 use rocket_sync_db_pools::{database, postgres};
 use serde::{Deserialize, Serialize};
 
-use crate::{config::Config};
+use crate::config::Config;
 
 mod comm;
 mod config;
@@ -34,7 +34,11 @@ async fn start(
     } else {
         Ok(Json(StartCommResponse {
             client_url: format!("tel:{},{}", config.phonenumber(), dtmf),
-            attr_url: Some(format!("{}/session_result/{}", config.base_config().internal_url(), resultcode)),
+            attr_url: Some(format!(
+                "{}/session_result/{}",
+                config.base_config().internal_url(),
+                resultcode
+            )),
         }))
     }
 }
