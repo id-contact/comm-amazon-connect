@@ -4,11 +4,21 @@ use id_contact_proto::AuthResult;
 use crate::{SessionDBConn, config::Config};
 
 pub async fn clean_db(db: &SessionDBConn) -> Result<(), Error> {
-    db.run(move |c| c.execute("DELETE FROM session WHERE lastActivity < now() - INTERVAL '1 hour'", &[])).await?;
+    db.run(move |c| {
+        c.execute(
+            "DELETE FROM session WHERE lastActivity < now() - INTERVAL '1 hour'",
+            &[],
+        )
+    })
+    .await?;
     Ok(())
 }
 
-pub async fn create_session(db: &SessionDBConn, config: &Config, purpose: &str) -> Result<(String, String), Error> {
+pub async fn create_session(
+    db: &SessionDBConn,
+    config: &Config,
+    purpose: &str,
+) -> Result<(String, String), Error> {
     loop {
         let dtmf = config.generate_dtmf();
         let result = config.generate_resultcode();
@@ -18,7 +28,7 @@ pub async fn create_session(db: &SessionDBConn, config: &Config, purpose: &str) 
         let purpose_copy = purpose.to_string();
         let n = db.run(move |c| c.execute("INSERT INTO session (dtmfcode, resultcode, purpose, lastActivity) VALUES ($1, $2, $3, now())", &[&dtmf_copy, &result_copy, &purpose_copy])).await?;
         if n == 1 {
-            return Ok((dtmf, result))
+            return Ok((dtmf, result));
         }
     }
 }
@@ -36,7 +46,11 @@ pub async fn report_result(db: &SessionDBConn, config: &Config, resultcode: &str
     }
 }
 
-pub async fn link_phone_session(db: &SessionDBConn, dtmfcode: &str, sessionid: &str) -> Result<(), Error> {
+pub async fn link_phone_session(
+    db: &SessionDBConn,
+    dtmfcode: &str,
+    sessionid: &str,
+) -> Result<(), Error> {
     let dtmf_copy = dtmfcode.to_string();
     let session_copy = sessionid.to_string();
 
@@ -48,16 +62,25 @@ pub async fn link_phone_session(db: &SessionDBConn, dtmfcode: &str, sessionid: &
     }
 }
 
-pub async fn get_session_info(db: &SessionDBConn, config: &Config, sessionid: &str) -> Result<(String, Option<AuthResult>), Error> {
+pub async fn get_session_info(
+    db: &SessionDBConn,
+    config: &Config,
+    sessionid: &str,
+) -> Result<(String, Option<AuthResult>), Error> {
     let sessionid_copy = sessionid.to_string();
-    let (purpose, jwt) = db.run(move |c| -> Result<(String, Option<String>), Error> {
-        let rows = c.query("SELECT purpose, attr_jwt FROM session WHERE sessionid = $1", &[&sessionid_copy])?;
-        if rows.len() != 1 {
-            Err(Error::NotFound)
-        } else {
-            Ok((rows[0].get("purpose"), rows[0].try_get("attr_jwt")?))
-        }
-    }).await?;
+    let (purpose, jwt) = db
+        .run(move |c| -> Result<(String, Option<String>), Error> {
+            let rows = c.query(
+                "SELECT purpose, attr_jwt FROM session WHERE sessionid = $1",
+                &[&sessionid_copy],
+            )?;
+            if rows.len() != 1 {
+                Err(Error::NotFound)
+            } else {
+                Ok((rows[0].get("purpose"), rows[0].try_get("attr_jwt")?))
+            }
+        })
+        .await?;
 
     if let Some(jwt) = jwt {
         Ok((purpose, Some(id_contact_jwt::decrypt_and_verify_auth_result(&jwt, config.base_config().validator(), config.base_config().decrypter())?)))

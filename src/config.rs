@@ -1,10 +1,10 @@
 use id_contact_comm_common::config::{RawConfig as RawBaseConfig, Config as BaseConfig};
 use id_contact_comm_common::error::Error;
 use id_contact_jwt::{EncryptionKeyConfig, SignKeyConfig};
-use serde::Deserialize;
 use josekit::{jwe::JweDecrypter, jws::JwsVerifier};
-use rand::{thread_rng, Rng};
 use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
+use serde::Deserialize;
 
 use std::convert::TryFrom;
 
@@ -35,7 +35,7 @@ impl TryFrom<RawConfig> for Config {
         Ok(Config {
             base_config: BaseConfig::try_from(config.raw_base_config)?,
             phonenumber: config.phonenumber,
-            
+
             dtmf_length: config.dtmf_length,
             result_length: config.result_length,
         })
