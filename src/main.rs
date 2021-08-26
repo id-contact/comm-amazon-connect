@@ -1,6 +1,6 @@
 use id_contact_comm_common::prelude::*;
 use id_contact_proto::{AuthResult, StartCommRequest, StartCommResponse};
-use rocket::{fairing::AdHoc, get, launch, post, routes, serde::json::Json, State};
+use rocket::{get, launch, post, routes, serde::json::Json, State};
 use rocket_sync_db_pools::{database, postgres};
 use serde::{Deserialize, Serialize};
 
@@ -87,11 +87,16 @@ async fn session_info(
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build()
+    let base = rocket::build()
         .mount(
             "/",
             routes![start, report_result, link_phone, session_info, clean_db,],
         )
-        .attach(SessionDBConn::fairing())
-        .attach(AdHoc::config::<Config>())
+        .attach(SessionDBConn::fairing());
+
+    let config = base.figment().extract::<Config>().unwrap_or_else(|_e| {
+        // Drop error value, as it could contain secrets
+        panic!("Failure to parse configuration")
+    });
+    base.manage(config)
 }
