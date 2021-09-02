@@ -1,10 +1,7 @@
 use id_contact_comm_common::config::{Config as BaseConfig, RawConfig as RawBaseConfig};
-use id_contact_comm_common::error::Error;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use serde::Deserialize;
-
-use std::convert::TryFrom;
 
 #[derive(Deserialize, Debug)]
 struct RawConfig {
@@ -17,27 +14,13 @@ struct RawConfig {
 }
 
 #[derive(Debug, Deserialize)]
-#[serde(try_from = "RawConfig")]
 pub struct Config {
+    #[serde(flatten)]
     base_config: BaseConfig,
     phonenumber: String,
 
     dtmf_length: usize,
     result_length: usize,
-}
-
-// This tryfrom can be removed once try_from for fields lands in serde
-impl TryFrom<RawConfig> for Config {
-    type Error = Error;
-    fn try_from(config: RawConfig) -> Result<Config, Error> {
-        Ok(Config {
-            base_config: BaseConfig::try_from(config.raw_base_config)?,
-            phonenumber: config.phonenumber,
-
-            dtmf_length: config.dtmf_length,
-            result_length: config.result_length,
-        })
-    }
 }
 
 impl Config {
