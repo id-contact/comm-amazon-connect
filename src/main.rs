@@ -1,13 +1,13 @@
+use id_contact_comm_common::prelude::*;
 use id_contact_proto::{AuthResult, StartCommRequest, StartCommResponse};
 use rocket::{get, launch, post, routes, serde::json::Json, State};
 use rocket_sync_db_pools::{database, postgres};
 use serde::{Deserialize, Serialize};
 
-use crate::{config::Config, error::Error};
+use crate::config::Config;
 
 mod comm;
 mod config;
-mod error;
 
 #[database("session")]
 pub struct SessionDBConn(postgres::Client);
@@ -36,7 +36,7 @@ async fn start(
             client_url: format!("tel:{},{}", config.phonenumber(), dtmf),
             attr_url: Some(format!(
                 "{}/session_result/{}",
-                config.internal_url(),
+                config.base_config().internal_url(),
                 resultcode
             )),
         }))

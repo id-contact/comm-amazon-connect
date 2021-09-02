@@ -1,6 +1,6 @@
+use id_contact_comm_common::error::Error;
 use id_contact_proto::AuthResult;
 
-use crate::error::Error;
 use crate::{config::Config, SessionDBConn};
 
 pub async fn clean_db(db: &SessionDBConn) -> Result<(), Error> {
@@ -39,7 +39,11 @@ pub async fn report_result(
     resultcode: &str,
     jwt: &str,
 ) -> Result<(), Error> {
-    id_contact_jwt::decrypt_and_verify_auth_result(jwt, config.validator(), config.decrypter())?;
+    id_contact_jwt::decrypt_and_verify_auth_result(
+        &jwt,
+        config.base_config().validator(),
+        config.base_config().decrypter(),
+    )?;
 
     let resultcode_copy = resultcode.to_string();
     let jwt_copy = jwt.to_string();
@@ -92,8 +96,8 @@ pub async fn get_session_info(
             purpose,
             Some(id_contact_jwt::decrypt_and_verify_auth_result(
                 &jwt,
-                config.validator(),
-                config.decrypter(),
+                config.base_config().validator(),
+                config.base_config().decrypter(),
             )?),
         ))
     } else {
