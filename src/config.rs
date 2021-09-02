@@ -1,17 +1,7 @@
-use id_contact_comm_common::config::{Config as BaseConfig, RawConfig as RawBaseConfig};
+use id_contact_comm_common::config::{Config as BaseConfig};
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use serde::Deserialize;
-
-#[derive(Deserialize, Debug)]
-struct RawConfig {
-    #[serde(flatten)]
-    raw_base_config: RawBaseConfig,
-    phonenumber: String,
-
-    dtmf_length: usize,
-    result_length: usize,
-}
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
