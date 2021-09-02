@@ -1,4 +1,4 @@
-use id_contact_comm_common::config::{Config as BaseConfig};
+use id_contact_comm_common::config::Config as BaseConfig;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use serde::Deserialize;
